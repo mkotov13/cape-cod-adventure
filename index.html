@@ -9,10 +9,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Warm Neutrals (Linen, Slate, Sand) -->
-    <!-- Application Structure Plan: The SPA uses a tabbed navigation structure. Initially, it shows the itinerary selection and details. A new "Live Map" tab allows users to switch to a dynamic map view. This structure provides two distinct but related exploration paths (detailed text vs. geographical overview) without page reloads. This design ensures user understanding and easy navigation between planning details and geographical context. -->
-    <!-- Visualization & Content Choices: Report Info: Driving Times -> Goal: Compare -> Viz: Bar Chart -> Interaction: Hover for tooltip -> Justification: Easiest way to compare the three numerical data points. Library: Chart.js. Report Info: Three Itineraries & Locations -> Goal: Organize & Inform -> Viz: Interactive Cards & Dynamic Timeline (for itineraries) and Interactive Map (for geographical context) -> Interaction: Click card to show/hide relevant timeline, Click tab to switch view, Click map marker for info, Live location toggle -> Justification: Provides comprehensive detail and spatial understanding. The map visually groups points by itinerary via distinct marker colors and integrates user live location for real-world utility. Method: Vanilla JS & Tailwind CSS for UI and interaction, Google Maps API for map. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -62,18 +58,13 @@
             height: 300px;
             max-height: 400px;
         }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
         #map-container {
             height: 600px; /* Default height for the map */
             width: 100%;
             border-radius: 0.75rem; /* Rounded corners */
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-            margin-top: 1.5rem;
+            margin-top: 2rem; /* Spacing between selector and map */
+            margin-bottom: 2rem; /* Spacing between map and details */
         }
         /* Make the map responsive */
         @media (min-width: 768px) {
@@ -119,68 +110,42 @@
             <p class="text-lg text-gray-600">A chic half-day guide for Sunday, June 29, 2025. Less crowds, more charm.</p>
         </header>
 
-        <nav class="flex justify-center space-x-4 mb-8">
-            <button class="tab-button px-6 py-2 rounded-full font-semibold text-lg transition-colors duration-200 bg-gray-200 hover:bg-gray-300 active-tab" data-tab="itineraries">Itineraries</button>
-            <button class="tab-button px-6 py-2 rounded-full font-semibold text-lg transition-colors duration-200 bg-gray-200 hover:bg-gray-300" data-tab="map">Live Map</button>
-        </nav>
-
         <main>
-            <section id="itineraries-tab-content" class="tab-content active">
-                <section id="itinerary-selector" class="mb-12">
-                    <h2 class="text-2xl font-bold text-center mb-8">Choose Your Vibe</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        
-                        <div id="wellfleet-card" data-town="wellfleet" class="itinerary-card cursor-pointer bg-white p-6 rounded-lg shadow-md border-2 border-transparent text-center">
-                            <div class="text-4xl mb-3">🎨</div>
-                            <h3 class="text-xl font-bold font-display mb-2">Wellfleet</h3>
-                            <p class="text-gray-600 mb-4">Coastal Elegance & Artistic Finds</p>
-                            <span class="text-sm font-semibold text-gray-700 bg-gray-100 py-1 px-3 rounded-full">~48 min drive</span>
-                        </div>
-
-                        <div id="orleans-card" data-town="orleans" class="itinerary-card cursor-pointer bg-white p-6 rounded-lg shadow-md border-2 border-transparent text-center">
-                            <div class="text-4xl mb-3">🌿</div>
-                            <h3 class="text-xl font-bold font-display mb-2">Orleans</h3>
-                            <p class="text-gray-600 mb-4">Quaint Charm & Serene Views</p>
-                            <span class="text-sm font-semibold text-gray-700 bg-gray-100 py-1 px-3 rounded-full">~31 min drive</span>
-                        </div>
-
-                        <div id="harwich-card" data-town="harwich" class="itinerary-card cursor-pointer bg-white p-6 rounded-lg shadow-md border-2 border-transparent text-center">
-                            <div class="text-4xl mb-3">⚓</div>
-                            <h3 class="text-xl font-bold font-display mb-2">Harwich Port</h3>
-                            <p class="text-gray-600 mb-4">Laid-Back Luxury & Hidden Gems</p>
-                            <span class="text-sm font-semibold text-gray-700 bg-gray-100 py-1 px-3 rounded-full">~35 min drive</span>
-                        </div>
+            <section id="itinerary-selector" class="mb-8">
+                <h2 class="text-2xl font-bold text-center mb-8">Choose Your Vibe</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    
+                    <div id="wellfleet-card" data-town="wellfleet" class="itinerary-card cursor-pointer bg-white p-6 rounded-lg shadow-md border-2 border-transparent text-center">
+                        <div class="text-4xl mb-3">🎨</div>
+                        <h3 class="text-xl font-bold font-display mb-2">Wellfleet</h3>
+                        <p class="text-gray-600 mb-4">Coastal Elegance & Artistic Finds</p>
+                        <span class="text-sm font-semibold text-gray-700 bg-gray-100 py-1 px-3 rounded-full">~48 min drive</span>
                     </div>
-                </section>
 
-                <section id="itinerary-details" class="transition-opacity duration-500 ease-in-out">
-                </section>
-
-                <section class="mt-16 bg-white p-6 rounded-lg shadow-md">
-                    <h2 class="text-2xl font-bold text-center mb-6">Drive Time at a Glance</h2>
-                    <p class="text-center text-gray-600 mb-8">This chart shows the estimated one-way driving time from your starting point in Centerville to each town. Use this to help plan your travel and decide which escape best fits your schedule. Hover over the bars for exact minutes.</p>
-                    <div class="chart-container">
-                        <canvas id="driveTimeChart"></canvas>
+                    <div id="orleans-card" data-town="orleans" class="itinerary-card cursor-pointer bg-white p-6 rounded-lg shadow-md border-2 border-transparent text-center">
+                        <div class="text-4xl mb-3">🌿</div>
+                        <h3 class="text-xl font-bold font-display mb-2">Orleans</h3>
+                        <p class="text-gray-600 mb-4">Quaint Charm & Serene Views</p>
+                        <span class="text-sm font-semibold text-gray-700 bg-gray-100 py-1 px-3 rounded-full">~31 min drive</span>
                     </div>
-                </section>
+
+                    <div id="harwich-card" data-town="harwich" class="itinerary-card cursor-pointer bg-white p-6 rounded-lg shadow-md border-2 border-transparent text-center">
+                        <div class="text-4xl mb-3">⚓</div>
+                        <h3 class="text-xl font-bold font-display mb-2">Harwich Port</h3>
+                        <p class="text-gray-600 mb-4">Laid-Back Luxury & Hidden Gems</p>
+                        <span class="text-sm font-semibold text-gray-700 bg-gray-100 py-1 px-3 rounded-full">~35 min drive</span>
+                    </div>
+                </div>
             </section>
 
-            <section id="map-tab-content" class="tab-content">
-                <h2 class="text-2xl font-bold text-center mb-8">Cape Cod Itinerary Map</h2>
+            <section id="map-section" class="mb-8">
+                <h2 class="text-2xl font-bold text-center mb-8">Selected Itinerary Map</h2>
                 <div class="flex flex-col md:flex-row gap-6">
                     <div class="flex-grow">
                         <div id="map-container"></div>
                     </div>
 
                     <div class="bg-white p-6 rounded-lg shadow-lg md:w-1/3">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-4">Filter Map Points</h2>
-                        <div class="flex flex-wrap gap-3 mb-6">
-                            <button class="filter-map-button bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-full shadow-md transition-colors duration-200" data-itinerary="All">All Itineraries</button>
-                            <button class="filter-map-button bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full shadow-md transition-colors duration-200" data-itinerary="wellfleet">Wellfleet</button>
-                            <button class="filter-map-button bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-md transition-colors duration-200" data-itinerary="orleans">Orleans</button>
-                            <button class="filter-map-button bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-full shadow-md transition-colors duration-200" data-itinerary="harwich">Harwich Port</button>
-                        </div>
-
                         <button id="toggleMapLocation" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-full shadow-lg transition-colors duration-200 mb-6">
                             Enable Live Location
                         </button>
@@ -196,6 +161,17 @@
                             </ul>
                         </div>
                     </div>
+                </div>
+            </section>
+
+            <section id="itinerary-details" class="transition-opacity duration-500 ease-in-out">
+            </section>
+
+            <section class="mt-16 bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold text-center mb-6">Drive Time at a Glance</h2>
+                <p class="text-center text-gray-600 mb-8">This chart shows the estimated one-way driving time from your starting point in Centerville to each town. Use this to help plan your travel and decide which escape best fits your schedule. Hover over the bars for exact minutes.</p>
+                <div class="chart-container">
+                    <canvas id="driveTimeChart"></canvas>
                 </div>
             </section>
         </main>
@@ -214,7 +190,7 @@
                 title: 'Wellfleet: Coastal Elegance & Artistic Finds',
                 description: "Wellfleet is a magnet for creative souls and a haven of good taste. It boasts dozens of unique shops and galleries while maintaining a quieter, more secluded feel. This itinerary balances artistic vibrancy with peaceful charm for a refined yet relaxed day.",
                 timeline: [
-                    { type: 'cafe', title: 'Morning Indulgence: The Flying Fish Cafe', content: 'Start with coffee and a freshly baked treat from the in-house Wildflour Bakery. A local fixture with a welcoming feel.', details: { address: '262 Main Street, Wellfleet, MA 02667', hours: '7 AM - 9 PM', link: 'https://maps.app.goo.gl/9xX6oGkX1R63wLwH8'}, lat: 41.9360, lng: -70.0306,
+                    { type: 'cafe', title: 'Morning Indulgence: The Flying Fish Cafe', content: 'Start with coffee and a freshly baked treat from the in-house Wildflour Bakery. A local fixture with a welcoming feel.', details: { address: '262 Main Street, Wellfleet, MA 02667', hours: '7 AM - 9 PM', link: 'https://www.google.com/maps/search/?api=1&query=The%20Flying%20Fish%20Cafe,%20262%20Main%20Street,%20Wellfleet,%20MA%2002667'}, lat: 41.9360, lng: -70.0306,
                       images: [
                         { src: 'https://images.unsplash.com/photo-1504178550293-ad557993a400?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHw3fHxjYWZlJTIwY291bnRlcnxlbnwwfHx8fDE3MDkwNDAwMDB8MA', alt: 'Bright and inviting cafe counter with pastries', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/d3c7b2/2e3a47?text=Image+Not+Found';" },
                         { src: 'https://images.unsplash.com/photo-1561043329-847321e25e36?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHwxNHx8YnJlYWtmYXN0JTIwYmFkZXJ5fGVufDB8fHx8MTcwOTA0MDAwMHww', alt: 'Assortment of freshly baked goods on display', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/d3c7b2/2e3a47?text=Image+Not+Found';" },
@@ -222,11 +198,11 @@
                       ]
                     },
                     { type: 'shop', title: 'Boutique Browsing: Main Street Gems', content: 'Explore a curated collection of contemporary clothing, handmade gifts, and unique jewelry in shops like Salt, Drift, and Sailor.', details: [
-                        { name: 'Salt', link: 'https://maps.app.goo.gl/u4i5y5eF2vR2Ff84A' },
-                        { name: 'Drift', link: 'https://maps.app.goo.gl/3547J81uWwD36WpW8' },
-                        { name: 'Off Center', link: 'https://maps.app.goo.gl/hYm49u8p9Jc8N7oB7' },
-                        { name: 'Ragg Time Ltd.', link: 'https://maps.app.goo.gl/8n9nKqJzK4P8y4eK7' },
-                        { name: 'Sailor', link: 'https://maps.app.goo.gl/3y6rP4L8Y2R7U4cW9' }
+                        { name: 'Salt', link: 'https://www.google.com/maps/search/?api=1&query=Salt,%20313%20Main%20St,%20Wellfleet,%20MA%2002667' },
+                        { name: 'Drift', link: 'https://www.google.com/maps/search/?api=1&query=Drift,%20361%20Main%20Street,%20Wellfleet,%20MA%2002667' },
+                        { name: 'Off Center', link: 'https://www.google.com/maps/search/?api=1&query=Off%20Center,%20354A%20Main%20St,%20Wellfleet,%20MA%2002667' },
+                        { name: 'Ragg Time Ltd.', link: 'https://www.google.com/maps/search/?api=1&query=Ragg%20Time%20Ltd.,%20317%20Main%20Street,%20Wellfleet,%20MA%2002667' },
+                        { name: 'Sailor', link: 'https://www.google.com/maps/search/?api=1&query=Sailor,%20313%20Main%20Street,%20Wellfleet,%20MA%2002667' }
                     ], lat: 41.9332, lng: -70.0336,
                       images: [
                         { src: 'https://images.unsplash.com/photo-1549449033-038b368725ae?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHwzfHxzY2VuZWklMjBtYWluJTIwc3RyZWV0JTIwc2hvcHBpbmclMjBjYXBlJTIwY29kfGVufDB8fHx8MTcwODY0MjIwM3ww', alt: 'Charming Main Street with boutique storefronts', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/b0c4de/2e3a47?text=Image+Not+Found';" },
@@ -234,15 +210,15 @@
                         { src: 'https://images.unsplash.com/photo-1594938634842-83563969a5a3?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHwxfHxhcnRpc2FuJTIwamV3ZWxyeXxlbnwwfHx8fDE3MDg2NDIyMDN8MA', alt: 'Display of handmade artisan jewelry', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/b0c4de/2e3a47?text=Image+Not+Found';" }
                       ]
                     },
-                    { type: 'lunch', title: 'Appealing Lunch: The Flying Fish Cafe', content: 'Return for a relaxed lunch featuring a delicious selection of items prepared by a master chef in a lively, local atmosphere.', details: { address: '262 Main Street, Wellfleet, MA 02667', hours: 'Open for Lunch', link: 'https://maps.app.goo.gl/9xX6oGkX1R63wLwH8'}, lat: 41.9360, lng: -70.0306,
+                    { type: 'lunch', title: 'Appealing Lunch: The Flying Fish Cafe', content: 'Return for a relaxed lunch featuring a delicious selection of items prepared by a master chef in a lively, local atmosphere.', details: { address: '262 Main Street, Wellfleet, MA 02667', hours: 'Open for Lunch', link: 'https://www.google.com/maps/search/?api=1&query=The%20Flying%20Fish%20Cafe,%20262%20Main%20Street,%20Wellfleet,%20MA%2002667'}, lat: 41.9360, lng: -70.0306,
                       images: [
                         { src: 'https://images.unsplash.com/photo-1555243302-d178e589887e?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHwxNXx8Y2FmZSUyMGZvb2QlMjBwbGF0ZXN8ZW58MHx8fHwxNzA4NjQyNTcyfDA', alt: 'Deliciously plated lunch dishes', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/a9a9a9/fdfdf5?text=Image+Not+Found';" },
-                        { src: 'https://images.unsplash.com/photo-1546914717-3ac66df2e6d6?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwYXRtb3NwaGVyZXxlbnwwfHx8fDE3MDg2NDI1NzJ8MA', alt: 'Vibrant restaurant interior with diners', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/a9a9a9/fdfdf5?text=Image+Not+Found';" }
+                        { src: 'https://images.unsplash.com/photo-1546914717-3ac66df2e6d6?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHxyZXN0YXVyYW50JTIwYXRtb3NwaGVyZXxlbnwwfHx8fDE3MDg2NDI1NzJ8MA', alt: 'Vibrant restaurant interior with diners', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/a9a9a9/fdfdf5?text=Image+Not+Found';" }
                       ]
                     },
-                    { type: 'walk', title: 'Scenic Stroll: Uncle Tim\'s Bridge', content: 'Take a short, historic walk across this bridge spanning Duck Creek. It offers spectacular, tranquil views of the salt marsh. An easy 0.5-mile walk.', details: { address: '300 Main St, Wellfleet, MA 02667', hours: 'Public access', link: 'https://maps.app.goo.gl/193jJ3rK9ZJ2f3wS7'}, lat: 41.9333, lng: -70.0250,
+                    { type: 'walk', title: 'Scenic Stroll: Uncle Tim\'s Bridge', content: 'Take a short, historic walk across this bridge spanning Duck Creek. It offers spectacular, tranquil views of the salt marsh. An easy 0.5-mile walk.', details: { address: '300 Main St, Wellfleet, MA 02667', hours: 'Public access', link: 'https://www.google.com/maps/search/?api=1&query=Uncle%20Tim%27s%20Bridge,%20300%20Main%20St,%20Wellfleet,%20MA%2002667'}, lat: 41.9333, lng: -70.0250,
                       images: [
-                        { src: 'https://images.unsplash.com/photo-1598284534720-e7178d8a7c2e?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHw1fHx1bmNsZSUyMHRpbXMlMjBicmlkZ2V8ZW58MHx8fHwxNzA4NjQyNjQwfDA', alt: 'Wooden bridge over a calm waterway with salt marsh', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/8fbc8f/fdfdf5?text=Image+Not+Found';" },
+                        { src: 'https://images.unsplash.com/photo-1598284534720-e7178d8a7c2e?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHw1fHxhbmdsZSUyMHRpbXMlMjBicmlkZ2V8ZW58MHx8fHwxNzA4NjQyNjQwfDA', alt: 'Wooden bridge over a calm waterway with salt marsh', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/8fbc8f/fdfdf5?text=Image+Not+Found';" },
                         { src: 'https://images.unsplash.com/photo-1629851080350-a92c3a37d6e6?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHwxfHxzYWx0JTIwbWFyc2glMjBjYXBlJTIwY29kfGVufDB8fHx8MTcwODY0MjY0MHww', alt: 'Expansive salt marsh landscape with water channels', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/8fbc8f/fdfdf5?text=Image+Not+Found';" },
                         { src: 'https://images.unsplash.com/photo-1601004318041-c7d0d62a937c?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHwzfHxhbmdsZSUyMHZpZXclMjBvZiUyMHNhbHQlMjBtYXJzaCUyMGF0JTIwYnJpZGdlfGVufDB8fHx8MTcwODY0MjY0MHww', alt: 'Scenic view from a bridge overlooking a salt marsh', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/8fbc8f/fdfdf5?text=Image+Not+Found';" }
                       ]
@@ -253,7 +229,7 @@
                 title: 'Orleans: Quaint Charm & Serene Views',
                 description: 'Orleans offers a charming, vibrant art scene and great shopping without being as congested as other towns. This itinerary provides a lively yet manageable atmosphere for a day of rich, engaging, and relaxed exploration.',
                 timeline: [
-                    { type: 'cafe', title: 'Morning Brew & Bites: Hot Chocolate Sparrow', content: 'A local institution and charming caffeine haven. Enjoy specialty coffee, rich chocolates, and a cozy ambiance.', details: { address: '5 Old Colony Way, Orleans, MA 02653', hours: '6:45 AM - 7:30 PM', link: 'https://maps.app.goo.gl/2Fj9iXz6kR7yJ8T8A'}, lat: 41.7951, lng: -69.9968,
+                    { type: 'cafe', title: 'Morning Brew & Bites: Hot Chocolate Sparrow', content: 'A local institution and charming caffeine haven. Enjoy specialty coffee, rich chocolates, and a cozy ambiance.', details: { address: '5 Old Colony Way, Orleans, MA 02653', hours: '6:45 AM - 7:30 PM', link: 'https://www.google.com/maps/search/?api=1&query=Hot%20Chocolate%20Sparrow,%205%20Old%20Colony%20Way,%20Orleans,%20MA%2002653'}, lat: 41.7951, lng: -69.9968,
                       images: [
                         { src: 'https://images.unsplash.com/photo-1559812975-f8a4f89d3d0f?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHwxNHx8Y29mZmVlJTIwYW5kJTIwYmFnZWxzfGVufDB8fHx8MTcwODY0MzExM3ww', alt: 'Coffee cup with a freshly toasted bagel', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/b4d2e7/2e3a47?text=Image+Not+Found';" },
                         { src: 'https://images.unsplash.com/photo-1541416408272-911b333a4f89?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHwyfHxhcnRpc2FuJTIwY2hvY29sYXRlc3xlbnwwfHx8fDE3MDg2NDI3Njl8MA', alt: 'Hand-dipped chocolates and confectionery display', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/b4d2e7/2e3a47?text=Image+Not+Found';" },
@@ -261,10 +237,10 @@
                       ]
                     },
                     { type: 'shop', title: 'Curated Shopping: Village Center & East Orleans', content: 'Discover a mix of boutique retailers, from the beachy, modern styles at Homegrown Boutique to the upscale finds at Weekend.', details: [
-                        { name: "Watson's Style", link: 'https://maps.app.goo.gl/g69S2HwR7J8T8U9V6' },
-                        { name: "Homegrown Boutique", link: 'https://maps.app.goo.gl/L8c4F3J8G7H9K2L3A' },
-                        { name: "Salty Crown Boutique", link: 'https://maps.app.goo.gl/Q7R2T9Y5U4W1X0Z8C' },
-                        { name: "Weekend (East Orleans)", link: 'https://maps.app.goo.gl/P0Q5R23V4W1X' }
+                        { name: "Watson's Style", link: 'https://www.google.com/maps/search/?api=1&query=Watson%27s%20Style,%2034A%20Main%20Street,%20Orleans,%20MA%2002653' },
+                        { name: "Homegrown Boutique", link: 'https://www.google.com/maps/search/?api=1&query=Homegrown%20Boutique,%2034%20Main%20Street%20Suite%20B,%20Orleans,%20MA%2002653' },
+                        { name: "Salty Crown Boutique", link: 'https://www.google.com/maps/search/?api=1&query=Salty%20Crown%20Boutique,%20136%20Rt%206A,%20Orleans,%20MA%2002653' },
+                        { name: "Weekend (East Orleans)", link: 'https://www.google.com/maps/search/?api=1&query=Weekend,%20217%20Main%20Street,%20East%20Orleans,%20MA%2002643' }
                     ], lat: 41.7944, lng: -69.9983,
                       images: [
                         { src: 'https://images.unsplash.com/photo-1605634676664-d4218f2d5e7a?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjBjbG90aGluZyUyMGJvdXRpcXVlfGVufDB8fHx8MTcwODY0Mjg1OXww', alt: 'Stylish clothing display in a modern boutique', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/d2b48c/fdfdf5?text=Image+Not+Found';" },
@@ -272,17 +248,17 @@
                         { src: 'https://images.unsplash.com/photo-1594248432578-838c6411d331?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHw4fHxoYW5kbWFkZSUyMGdpZnRzJTIwc2hvcHxlbnwwfHx8fDE3MDg2NDI4NTl8MA', alt: 'Shelves filled with unique home goods and gifts', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/d2b48c/fdfdf5?text=Image+Not+Found';" }
                       ]
                     },
-                    { type: 'lunch', title: 'Appealing Lunch: Navillus', content: 'An upscale dining experience with a "big city vibe." Enjoy delicious craft cocktails and creative twists on popular dishes.', details: { address: '136 Rt. 6A, Orleans, MA 02653', hours: '12 PM - 9 PM', link: 'https://maps.app.goo.gl/K6L1M8N9O2P3Q4R5S'}, lat: 41.7972, lng: -69.9959,
+                    { type: 'lunch', title: 'Appealing Lunch: Navillus', content: 'An upscale dining experience with a "big city vibe." Enjoy delicious craft cocktails and creative twists on popular dishes.', details: { address: '136 Rt. 6A, Orleans, MA 02653', hours: '12 PM - 9 PM', link: 'https://www.google.com/maps/search/?api=1&query=Navillus,%20136%20Rt.%206A,%20Orleans,%20MA%2002653'}, lat: 41.7972, lng: -69.9959,
                       images: [
                         { src: 'https://images.unsplash.com/photo-1579735414210-9b6f17e0b57e?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHw1fHxyZXN0YXVyYW50JTIwYmFyJTIwY291bnRlcnxlbnwwfHx8fDE3MDg2NDI5NDh8MA', alt: 'Modern restaurant interior with a stylish bar area', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/b0e0e6/2e3a47?text=Image+Not+Found';" },
                         { src: 'https://images.unsplash.com/photo-1563222384-2544e45d94fc?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHw0fHxjcmFmdCUyMGNvY2t0YWlsc3xlbnwwfHx8fDE3MDg2NDI5NDh8MA', alt: 'Assortment of colorful craft cocktails', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/b0e0e6/2e3a47?text=Image+Not+Found';" },
                         { src: 'https://images.unsplash.com/photo-1582210427339-b9d997232230?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHw5fHxncmVhdCUyMGZvb2QlMjBwbGF0ZWR8ZW58MHx8fHwxNzA4NjQyOTQ5fDA', alt: 'Exquisitely plated gourmet dish', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/b0e0e6/2e3a47?text=Image+Not+Found';" }
                       ]
                     },
-                    { type: 'walk', title: 'Scenic Stroll: Kent\'s Point', content: 'A peaceful walk through wooded upland, salt marsh, and a small sandy beach. The 1-1.5 mile trail offers picturesque views.', details: { address: '39 Keziah\'s Lane, Orleans, MA 02653', hours: 'Public access', link: 'https://maps.app.goo.gl/L9M4N1O8P5Q2R3S0T'}, lat: 41.7820, lng: -69.9670,
+                    { type: 'walk', title: 'Scenic Stroll: Kent\'s Point', content: 'A peaceful walk through wooded upland, salt marsh, and a small sandy beach. The 1-1.5 mile trail offers picturesque views.', details: { address: '39 Keziah\'s Lane, Orleans, MA 02653', hours: 'Public access', link: 'https://www.google.com/maps/search/?api=1&query=Kent%27s%20Point%20Conservation%20Area,%2039%20Keziah%27s%20Lane,%20Orleans,%20MA%2002653'}, lat: 41.7820, lng: -69.9670,
                       images: [
                         { src: 'https://images.unsplash.com/photo-1598466100803-0c46a6f6f9e2?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHwzfHxuYXR1cmUlMjB0cmFpbCUyMGZvcmVzdHxlbnwwfHx8fDE3MDg2NDMwMzJ8MA', alt: 'Wooded trail in a conservation area', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/add8e6/2e3a47?text=Image+Not+Found';" },
-                        { src: 'https://images.unsplash.com/photo-1629851080350-a92c3a37d6e6?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHwxfHxzYWx0JTIwbWFyc2glMjBjYXBlJTIwY29kfGVufDB8fHx8MTcwODY0MzAzMnww', alt: 'Scenic view of a salt marsh and water', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/add8e6/2e3a47?text=Image+Not+Found';" },
+                        { src: 'https://images.unsplash.com/photo-1629851080350-a92c3a37d6e6?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHwxfHxzYWx0JTIwbWFyc2glMjBjYXBlJTIwY29kfGVufDB8fHx8MTcwODY0MzAzMnww', alt: 'Expansive salt marsh landscape with water channels', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/add8e6/2e3a47?text=Image+Not+Found';" },
                         { src: 'https://images.unsplash.com/photo-1510444390709-b67f1b7b7f1e?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHwyMHx8c2FuZHklMjBiZWFjaCUyMGNvYXN0YWx8ZW58MHx8fHwxNzA4NjQzMDMyfDA', alt: 'Small sandy beach on a calm day', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/add8e6/2e3a47?text=Image+Not+Found';" }
                       ]
                     }
@@ -292,32 +268,32 @@
                 title: 'Harwich Port: Laid-Back Luxury & Hidden Gems',
                 description: 'With a "preppy, yet, laid back" vibe, Harwich Port has one of the nation\'s best main streets. This itinerary offers a relaxed exploration of local boutiques and charming eateries in a refined yet unpretentious atmosphere.',
                 timeline: [
-                    { type: 'cafe', title: 'Sweet Start: Buckies Biscotti', content: 'A beloved local bakery open for over 20 years. Famous for its biscotti, but also offers great coffee, bagels, and breakfast sandwiches.', details: { address: '681 Route 28, Dennis Port, MA 02639', hours: '7 AM - 7 PM', link: 'https://maps.app.goo.gl/Z2X7Y4W1V8U5T6S3R'}, lat: 41.6669, lng: -70.1585,
+                    { type: 'cafe', title: 'Sweet Start: Buckies Biscotti', content: 'A beloved local bakery open for over 20 years. Famous for its biscotti, but also offers great coffee, bagels, and breakfast sandwiches.', details: { address: '681 Route 28, Dennis Port, MA 02639', hours: '7 AM - 7 PM', link: 'https://www.google.com/maps/search/?api=1&query=Buckies%20Biscotti,%20681%20Route%2028,%20Dennis%20Port,%20MA%2002639'}, lat: 41.6669, lng: -70.1585,
                       images: [
-                        { src: 'https://images.unsplash.com/photo-1554901597-2a20a4066266?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHwyfHxiYWtlcnklMjBjb3VudGVyJTIwYmlzY290dGl8ZW58MHx8fHwxNzA5MDQwNTAwfDA', alt: 'Display counter with various baked goods', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/ffe4e1/2e3a47?text=Image+Not+Found';" },
+                        { src: 'https://images.unsplash.com/photo-1554901597-2a20a4066266?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHwyfHxiYWtlcnkl20jb3VudGVyJTIwYmlzY290dGl8ZW58MHx8fHwxNzA5MDQwNTAwfDA', alt: 'Display counter with various baked goods', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/ffe4e1/2e3a47?text=Image+Not+Found';" },
                         { src: 'https://images.unsplash.com/photo-1559812975-f8a4f89d3d0f?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHwxNHx8Y29mZmVlJTIwYW5kJTIwYmFnZWxzfGVufDB8fHx8MTcwODY0MzExM3ww', alt: 'Coffee and a freshly toasted bagel', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/ffe4e1/2e3a47?text=Image+Not+Found';" },
                         { src: 'https://images.unsplash.com/photo-1555541655-b4618a0a992a?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHw2fHxjYWZlJTIwZXh0ZXJpb3J8ZW58MHx8fHwxNzA4NjQyMTMxfDA', alt: 'Inviting bakery interior with display cases', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/ffe4e1/2e3a47?text=Image+Not+Found';" }
                       ]
                     },
                     { type: 'shop', title: 'Unique Boutiques: Harwich Port Main Street', content: 'Explore unique shops like Cape Life Gifts for souvenirs and Sativa, a gift shop with something for everyone.', details: [
-                        { name: 'Cape Life Gifts', link: 'https://maps.app.goo.gl/B5C0D7E8F9G1H2I3J' },
-                        { name: 'Sativa', link: 'https://maps.app.goo.gl/C6D1E8F9G2H3I4J5K' },
-                        { name: 'Dune Jewelry', link: 'https://maps.app.goo.gl/D7E2F9G0H3I4J5K6L' }
+                        { name: 'Cape Life Gifts', link: 'https://www.google.com/maps/search/?api=1&query=Cape%20Life%20Gifts,%20537%20Route%2028,%20Harwich%20Port,%20MA%2002646' },
+                        { name: 'Sativa', link: 'https://www.google.com/maps/search/?api=1&query=Sativa,%20517%20Route%2028,%20Harwich%20Port,%20MA%2002646' },
+                        { name: 'Dune Jewelry', link: 'https://www.google.com/maps/search/?api=1&query=Dune%20Harwich%20Port,%20566%20Rt%2028,%20Harwich%20Port,%20MA%2002646' }
                     ], lat: 41.6657, lng: -70.0767,
                       images: [
-                        { src: 'https://images.unsplash.com/photo-1549449033-038b368725ae?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHwzfHxzY2VuZWklMjBtYWluJTIwc3RyZWV0JTIwc2hvcHBpbmclMjBjYXBlJTIwY29kfGVufDB8fHx8MTcwODY0MjIwM3ww', alt: 'Charming street with boutique storefronts and flowers', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/e0ffff/2e3a47?text=Image+Not+Found';" },
+                        { src: 'https://images.unsplash.com/photo-1549449033-038b368725ae?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHwzfHxzY2VuZWklMjBtYWluJTIwc3RyZWV0JTIwc2hvcHBpbmclMjBjYXBlJTIwY29kfGVufDB8fHx8MTcwODY0MjIwM3ww', alt: 'Charming Main Street with boutique storefronts and flowers', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/e0ffff/2e3a47?text=Image+Not+Found';" },
                         { src: 'https://images.unsplash.com/photo-1574635677989-13e00b39f1e1?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHw1fHxtb2Rlcm4lMjBnaWZ0JTIwc2hvcHxlbnwwfHx8fDE3MDg2NDMyNDJ8MA', alt: 'Interior of a stylish gift shop with unique items', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/e0ffff/2e3a47?text=Image+Not+Found';" },
                         { src: 'https://images.unsplash.com/photo-1571597811910-f1c5d9a0d874?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHw0fHxqZXdlbHJ5JTIwZGlzcGxheXxlbnwwfHx8fDE3MDg2NDMyNDJ8MA', alt: 'Display of elegant jewelry pieces', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/e0ffff/2e3a47?text=Image+Not+Found';" }
                       ]
                     },
-                    { type: 'lunch', title: 'Gourmet Lunch: Brax Landing', content: 'A waterfront staple for decades overlooking Saquatucket Harbor. Known for "million dollar views" and fresh local seafood.', details: { address: '705 Rt 28, Harwich Port, MA 02646', hours: '11:30 AM - 8 PM', link: 'https://maps.app.goo.gl/E8F3G0H1I4J5K6L7M'}, lat: 41.6601, lng: -70.0706,
+                    { type: 'lunch', title: 'Gourmet Lunch: Brax Landing', content: 'A waterfront staple for decades overlooking Saquatucket Harbor. Known for "million dollar views" and fresh local seafood.', details: { address: '705 Rt 28, Harwich Port, MA 02646', hours: '11:30 AM - 8 PM', link: 'https://www.google.com/maps/search/?api=1&query=Brax%20Landing%20Waterfront%20Seafood,%20705%20Rt%2028,%20Harwich%20Port,%20MA%2002646'}, lat: 41.6601, lng: -70.0706,
                       images: [
                         { src: 'https://images.unsplash.com/photo-1517248135467-4c7edcad4725?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHwxMHx8d2F0ZXJmcm9udCUyMGRpbmluSyUyMHJlc3RhdXJhcmludHwzZmE0YzY3YmFzZGN0MTcwODU3MjAwMDkwfDA&ixlib=rb-4.0.3&q=80&w=400', alt: 'Elegant waterfront dining with harbor view', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/bdb76b/fdfdf5?text=Image+Not+Found';" },
                         { src: 'https://images.unsplash.com/photo-1559985960-98d7950c4224?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHwyfHxmcmVzaCUyMHNlYWZvb2QlMjBwbGF0ZXxlbnwwfHx8fDE3MDg2NDMzMzh8MA', alt: 'Beautifully plated seafood dish', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/bdb76b/fdfdf5?text=Image+Not+Found';" },
                         { src: 'https://images.unsplash.com/photo-1549596856-11f87a8b3f4f?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHw2fHxyZXN0YXVyYW50JTIwZXh0ZXJpb3IlMjBoYXJib3J8ZW58MHx8fHwxNzA4NjQzMzM4fDA', alt: 'Restaurant exterior overlooking a calm harbor', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/bdb76b/fdfdf5?text=Image+Not+Found';" }
                       ]
                     },
-                    { type: 'walk', title: 'Tranquil Path: Bell\'s Neck Conservation Lands', content: 'A peaceful, natural escape with a 2.75-mile loop around the reservoir offering sweeping salt marsh views and excellent birdwatching.', details: { address: 'Depot St, Harwich, MA 02645', hours: 'Public access', link: 'https://maps.app.goo.gl/F9G4H1I2J5K6L7M8N'}, lat: 41.7011, lng: -70.0905,
+                    { type: 'walk', title: 'Tranquil Path: Bell\'s Neck Conservation Lands', content: 'A peaceful, natural escape with a 2.75-mile loop around the reservoir offering sweeping salt marsh views and excellent birdwatching.', details: { address: 'Depot St, Harwich, MA 02645', hours: 'Public access', link: 'https://www.google.com/maps/search/?api=1&query=Bell%27s%20Neck%20Conservation%20Lands,%20Depot%20St,%20Harwich,%20MA%2002645'}, lat: 41.7011, lng: -70.0905,
                       images: [
                         { src: 'https://images.unsplash.com/photo-1507914488975-fc2142d1e21b?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHw0fHxyZXNlcnZvaXIlMjBsYW5kc2NhcGV8ZW58MHx8fHwxNzA4NjQzNDM0fDA', alt: 'Scenic view of a tranquil reservoir with trees', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/d8bfd8/2e3a47?text=Image+Not+Found';" },
                         { src: 'https://images.unsplash.com/photo-1629851080350-a92c3a37d6e6?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHwxfHxzYWx0JTIwbWFyc2glMjBjYXBlJTIwY29kfGVufDB8fHx8MTcwODY0MzQzNHww', alt: 'Vast salt marsh landscape with a winding creek', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/d8bfd8/2e3a47?text=Image+Not+Found';" },
@@ -337,7 +313,7 @@
             itinerary: "centerville", // Custom itinerary for coloring
             type: "start",
             description: "Your starting point on Cape Cod.",
-            link: "https://maps.app.goo.gl/yourcentervillelocation" // Example link for Centerville
+            link: "https://www.google.com/maps/search/?api=1&query=Centerville,%20MA"
         };
         allMapLocations.push(centervilleLocation);
 
@@ -368,8 +344,6 @@
         const selector = document.getElementById('itinerary-selector');
         const detailsContainer = document.getElementById('itinerary-details');
         const cards = selector.querySelectorAll('.itinerary-card');
-        const tabButtons = document.querySelectorAll('.tab-button');
-        const tabContents = document.querySelectorAll('.tab-content');
         const messageBox = document.getElementById('messageBox');
 
         function generateTimelineHTML(town) {
@@ -388,7 +362,7 @@
                 if (item.images && item.images.length > 0) {
                     imagesHTML = `<div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-4 mb-4 ml-9">
                         ${item.images.map(img => `
-                            <img src="${img.src}" alt="${img.alt}" class="w-full h-32 object-cover rounded-md shadow-sm" onerror="${img.onerror}">
+                            <img src="${img.src}" alt="${img.alt}" class="w-full h-32 object-cover rounded-md shadow-sm" onerror="this.onerror=null;this.src='${img.onerror.split("'")[1]}';">
                         `).join('')}
                     </div>`;
                 }
@@ -444,6 +418,9 @@
                 detailsContainer.innerHTML = generateTimelineHTML(selectedTown);
                 detailsContainer.style.opacity = 1;
             }, 300);
+
+            // Filter map markers and adjust map view based on selected itinerary
+            filterMapMarkers(selectedTown);
         });
 
         const ctx = document.getElementById('driveTimeChart').getContext('2d');
@@ -501,35 +478,6 @@
             }
         });
 
-        // Tab switching logic
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const targetTab = button.dataset.tab;
-
-                tabButtons.forEach(btn => btn.classList.remove('active-tab', 'bg-gray-400'));
-                button.classList.add('active-tab', 'bg-gray-400');
-
-                tabContents.forEach(content => {
-                    if (content.id === `${targetTab}-tab-content`) {
-                        content.classList.add('active');
-                    } else {
-                        content.classList.remove('active');
-                    }
-                });
-
-                // Initialize map only when the map tab is activated
-                if (targetTab === 'map' && !mapInstance) {
-                    initMap();
-                } else if (targetTab === 'map' && mapInstance) {
-                     // If map already initialized, just ensure markers are correct
-                    filterMapMarkers('All'); // Show all markers by default on map tab activation
-                    if (userLocationMapMarker && locationEnabledMap) {
-                        userLocationMapMarker.setMap(mapInstance);
-                    }
-                }
-            });
-        });
-
         // Function to display a temporary message
         function showMessage(message, duration = 3000) {
             messageBox.textContent = message;
@@ -557,7 +505,14 @@
 
         // Initialize the map
         function initMap() {
-            const capeCodCenter = { lat: 41.70, lng: -70.25 }; // General center of Cape Cod for initial view
+            const currentGoogleMapsApiKey = ""; // This will be automatically populated by the environment.
+            if (!currentGoogleMapsApiKey || currentGoogleMapsApiKey === "") {
+                showMessage("Google Maps API key is missing. Please ensure your environment is configured correctly.");
+                console.error("Google Maps API Error: API key is missing or invalid. Check the environment configuration.");
+                return;
+            }
+
+            const capeCodCenter = { lat: 41.70, lng: -70.25 };
             mapInstance = new google.maps.Map(document.getElementById("map-container"), {
                 center: capeCodCenter,
                 zoom: 11,
@@ -568,25 +523,22 @@
 
             mapInfoWindow = new google.maps.InfoWindow();
 
-            // Add all predefined locations to the map
+            // Initial load of all markers
             addMapMarkers(allMapLocations);
 
-            // Add event listeners for filter buttons on map tab
-            document.querySelectorAll('.filter-map-button').forEach(button => {
-                button.addEventListener('click', () => {
-                    const itinerary = button.dataset.itinerary;
-                    filterMapMarkers(itinerary);
-                });
-            });
-
-            // Add event listener for the live location toggle button on map tab
+            // Add event listener for the live location toggle button on map section
             document.getElementById('toggleMapLocation').addEventListener('click', toggleLiveLocationMap);
+
+            // Trigger the initial selection to show default map and itinerary
+            document.getElementById('wellfleet-card').click();
         }
 
-        // Function to add markers to the map
+        // Function to add or filter markers on the map
         function addMapMarkers(locs) {
+            // Clear existing markers, but keep user location marker if it exists
             mapMarkers.forEach(marker => marker.setMap(null));
             mapMarkers = [];
+            const bounds = new google.maps.LatLngBounds();
 
             locs.forEach(location => {
                 const marker = new google.maps.Marker({
@@ -616,23 +568,101 @@
                     mapInfoWindow.open(mapInstance, marker);
                 });
                 mapMarkers.push(marker);
+                bounds.extend(marker.getPosition()); // Extend bounds to include this marker
             });
-             // Ensure the user marker is re-added if it exists and location is enabled
+
+            // Adjust map to fit all visible markers
+            if (mapMarkers.length > 0) {
+                 // Add user's current location to bounds if visible
+                if (userLocationMapMarker && locationEnabledMap) {
+                    bounds.extend(userLocationMapMarker.getPosition());
+                }
+                mapInstance.fitBounds(bounds);
+                // Optional: set a min zoom level if fitBounds zooms in too much for a single point
+                if (mapMarkers.length === 1 && mapInstance.getZoom() > 14) {
+                    mapInstance.setZoom(14);
+                } else if (mapMarkers.length > 1 && mapInstance.getZoom() < 11) {
+                    mapInstance.setZoom(11);
+                }
+            }
+
+
+            // Ensure the user marker is re-added if it exists and location is enabled
             if (userLocationMapMarker && locationEnabledMap) {
                 userLocationMapMarker.setMap(mapInstance);
             }
         }
 
-        // Function to filter markers by itinerary
+        // Function to filter markers by itinerary and adjust map view
         function filterMapMarkers(selectedItinerary) {
-            mapMarkers.forEach(marker => {
-                if (selectedItinerary === "All" || marker.itinerary === selectedItinerary || marker.itinerary === "centerville") {
-                    marker.setMap(mapInstance);
-                } else {
-                    marker.setMap(null);
+            const markersToShow = [];
+            const bounds = new google.maps.LatLngBounds();
+
+            // Always include Centerville (starting point)
+            const centervilleMarker = allMapLocations.find(loc => loc.itinerary === "centerville");
+            if (centervilleMarker) {
+                markersToShow.push(centervilleMarker);
+                bounds.extend(new google.maps.LatLng(centervilleMarker.lat, centervilleMarker.lng));
+            }
+
+            allMapLocations.forEach(location => {
+                if (location.itinerary === selectedItinerary) {
+                    markersToShow.push(location);
+                    bounds.extend(new google.maps.LatLng(location.lat, location.lng));
                 }
             });
-            // Keep user location marker visible regardless of itinerary filter if tracking is active
+
+            // Clear all existing markers on the map
+            mapMarkers.forEach(marker => marker.setMap(null));
+            mapMarkers = [];
+
+            // Add only the filtered markers to the map
+            markersToShow.forEach(location => {
+                const marker = new google.maps.Marker({
+                    position: { lat: location.lat, lng: location.lng },
+                    map: mapInstance,
+                    title: location.name,
+                    icon: {
+                        url: getMapMarkerColor(location.itinerary),
+                        scaledSize: new google.maps.Size(30, 30)
+                    },
+                    itinerary: location.itinerary
+                });
+
+                marker.addListener("click", () => {
+                    mapInfoWindow.close();
+                    let infoWindowContent = `
+                        <div class="info-window-content">
+                            <h3>${location.name}</h3>
+                            <p><strong>Itinerary:</strong> ${location.itinerary.charAt(0).toUpperCase() + location.itinerary.slice(1)}</p>
+                            <p>${location.description}</p>
+                    `;
+                    if (location.link) {
+                        infoWindowContent += `<p><a href="${location.link}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 font-semibold mt-2 inline-block">Open in Google Maps</a></p>`;
+                    }
+                    infoWindowContent += `</div>`;
+                    mapInfoWindow.setContent(infoWindowContent);
+                    mapInfoWindow.open(mapInstance, marker);
+                });
+                mapMarkers.push(marker);
+            });
+            
+            // Adjust map to fit the new set of visible markers
+            if (markersToShow.length > 0) {
+                 // Include user's current location in bounds calculation if enabled
+                if (userLocationMapMarker && locationEnabledMap) {
+                    bounds.extend(userLocationMapMarker.getPosition());
+                }
+                mapInstance.fitBounds(bounds, {
+                    padding: 50 // Add some padding around the markers
+                });
+            } else {
+                // If no itinerary markers (only Centerville), center on Centerville with a default zoom
+                mapInstance.setCenter(new google.maps.LatLng(centervilleLocation.lat, centervilleLocation.lng));
+                mapInstance.setZoom(12);
+            }
+            
+            // Ensure user marker visibility is maintained if location is enabled
             if (userLocationMapMarker && locationEnabledMap) {
                 userLocationMapMarker.setMap(mapInstance);
             }
@@ -735,11 +765,16 @@
         const script = document.createElement('script');
         script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&callback=initMap`;
         script.async = true;
+        script.onerror = () => {
+            showMessage("Failed to load Google Maps. Please check your internet connection and API key.");
+            console.error("Google Maps API script failed to load.");
+        };
         document.head.appendChild(script);
 
-        // Initial load: select the first itinerary and activate the itineraries tab
-        document.getElementById('wellfleet-card').click();
-        document.querySelector('.tab-button[data-tab="itineraries"]').classList.add('active-tab', 'bg-gray-400');
+        // Initial load behavior:
+        // The initMap() function is now set as the callback for the Google Maps script.
+        // Inside initMap(), after the map is ready, it will programmatically click
+        // the 'wellfleet-card' to set the initial state (map filtered, itinerary details shown).
     </script>
 
 </body>
