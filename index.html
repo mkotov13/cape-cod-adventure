@@ -312,7 +312,7 @@
                     },
                     { type: 'lunch', title: 'Gourmet Lunch: Brax Landing', content: 'A waterfront staple for decades overlooking Saquatucket Harbor. Known for "million dollar views" and fresh local seafood.', details: { address: '705 Rt 28, Harwich Port, MA 02646', hours: '11:30 AM - 8 PM', link: 'https://maps.app.goo.gl/E8F3G0H1I4J5K6L7M'}, lat: 41.6601, lng: -70.0706,
                       images: [
-                        { src: 'https://images.unsplash.com/photo-1517248135467-4c7edcad4725?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHwxMHx8d2F0ZXJmcm9udCUyMGRpbmluZyUyMHJlc3RhdXJhcmludHwzZmE0YzY3YmFzZGN0MTcwODU3MjAwMDkwfDA&ixlib=rb-4.0.3&q=80&w=400', alt: 'Elegant waterfront dining with harbor view', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/bdb76b/fdfdf5?text=Image+Not+Found';" },
+                        { src: 'https://images.unsplash.com/photo-1517248135467-4c7edcad4725?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHwxMHx8d2F0ZXJmcm9udCUyMGRpbmluSyUyMHJlc3RhdXJhcmludHwzZmE0YzY3YmFzZGN0MTcwODU3MjAwMDkwfDA&ixlib=rb-4.0.3&q=80&w=400', alt: 'Elegant waterfront dining with harbor view', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/bdb76b/fdfdf5?text=Image+Not+Found';" },
                         { src: 'https://images.unsplash.com/photo-1559985960-98d7950c4224?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHwyfHxmcmVzaCUyMHNlYWZvb2QlMjBwbGF0ZXxlbnwwfHx8fDE3MDg2NDMzMzh8MA', alt: 'Beautifully plated seafood dish', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/bdb76b/fdfdf5?text=Image+Not+Found';" },
                         { src: 'https://images.unsplash.com/photo-1549596856-11f87a8b3f4f?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&h=250&fit=crop&ixid=M3w1NzgyMjN8MHwxfHNlYXJjaHw2fHxyZXN0YXVyYW50JTIwZXh0ZXJpb3IlMjBoYXJib3J8ZW58MHx8fHwxNzA4NjQzMzM4fDA', alt: 'Restaurant exterior overlooking a calm harbor', onerror: "this.onerror=null;this.src='https://placehold.co/400x250/bdb76b/fdfdf5?text=Image+Not+Found';" }
                       ]
@@ -336,7 +336,8 @@
             lng: -70.3340,
             itinerary: "centerville", // Custom itinerary for coloring
             type: "start",
-            description: "Your starting point on Cape Cod."
+            description: "Your starting point on Cape Cod.",
+            link: "https://maps.app.goo.gl/yourcentervillelocation" // Example link for Centerville
         };
         allMapLocations.push(centervilleLocation);
 
@@ -350,7 +351,8 @@
                         lng: item.lng,
                         itinerary: town, // Associate with its itinerary for filtering/coloring
                         type: item.type,
-                        description: item.content
+                        description: item.content,
+                        link: item.details.link || null // Include the Google Maps link
                     });
                 }
             });
@@ -600,13 +602,17 @@
 
                 marker.addListener("click", () => {
                     mapInfoWindow.close();
-                    mapInfoWindow.setContent(`
+                    let infoWindowContent = `
                         <div class="info-window-content">
                             <h3>${location.name}</h3>
                             <p><strong>Itinerary:</strong> ${location.itinerary.charAt(0).toUpperCase() + location.itinerary.slice(1)}</p>
                             <p>${location.description}</p>
-                        </div>
-                    `);
+                    `;
+                    if (location.link) {
+                        infoWindowContent += `<p><a href="${location.link}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 font-semibold mt-2 inline-block">Open in Google Maps</a></p>`;
+                    }
+                    infoWindowContent += `</div>`;
+                    mapInfoWindow.setContent(infoWindowContent);
                     mapInfoWindow.open(mapInstance, marker);
                 });
                 mapMarkers.push(marker);
